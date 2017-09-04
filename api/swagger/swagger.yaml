@@ -42,6 +42,58 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+
+
+  /user/{userId}/feedbacks:
+    x-swagger-router-controller: feedback-controller
+    get:
+      tags:
+        - Feedback
+      description: Returns all the feedbacks from the user
+      operationId: getFeedbacksForUser
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          type: string
+      responses:
+        "200":
+          description: Success
+          schema:
+            # a pointer to a definition
+            $ref: "#/definitions/FeedbacksResponse"
+          # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - Feedback
+      description: Adds the feedback for the user
+      operationId: addFeedbackForUser
+      parameters:
+        - name: userId
+          in: path
+          description: User ID
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/FeedbackRequest'
+      responses:
+        "200":
+          description: Success
+          schema:
+            $ref: '#/definitions/FeedbackResponse'
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -58,3 +110,56 @@ definitions:
     properties:
       message:
         type: string
+  FeedbacksResponse:
+    type: array
+    items:
+      type: object
+      properties:
+        _id:
+          type: string
+        title:
+          type: string
+        feedbackFor:
+          type: string
+        feedbackBody:
+          type: string
+      required:
+        - _id
+  FeedbackRequest:
+    description: Add request for adding feedback
+    properties:
+      title:
+        type: string
+        description: Feedback Title
+      feedbackBody:
+        type: string
+        description: Feedback Body
+      feedbackFor:
+        type: string
+        description: Entity for which feedback is for
+    required:
+      - title
+      - feedbackBody
+      - feedbackFor
+  FeedbackResponse:
+    type: object
+    properties:
+      _id:
+        type: string
+        description: Id of the newly created entity
+      title:
+        type: string
+        description: Feedback Title
+      feedbackBody:
+        type: string
+        description: Feedback Body
+      feedbackFor:
+        type: string
+        description: Entity for which feedback is for
+    required:
+      - title
+      - feedbackBody
+      - feedbackFor
+      - _id
+
+
