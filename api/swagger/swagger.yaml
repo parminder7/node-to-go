@@ -4,9 +4,9 @@ info:
   title: Hello World App
 # during dev, should point to your local machine
 host: localhost:10010
-# basePath prefixes all resource paths 
+# basePath prefixes all resource paths
 basePath: /
-# 
+#
 schemes:
   # tip: remove http to make production-grade
   - http
@@ -42,6 +42,98 @@ paths:
           description: Error
           schema:
             $ref: "#/definitions/ErrorResponse"
+  /topics:
+    x-swagger-router-controller: topic-controller
+    get:
+      tags:
+        - Topic
+      description: Returns list of all topic/questions
+      operationId: getAllTopics
+      parameters: []
+      responses:
+        "200":
+          description: Success
+          schema:
+          # a pointer to a definition
+            $ref: "#/definitions/TopicResponse"
+      # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - Topic
+      description: Adds a new topic
+      operationId: addTopic
+      parameters:
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddTopicParams'
+      responses:
+        "200":
+          description: Success
+          schema:
+          # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+      # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+  /topics/{topicId}:
+    x-swagger-router-controller: topic-controller
+    get:
+      tags:
+        - Topic
+      description: Returns list of all comments related to a topic
+      operationId: getTopicById
+      parameters:
+        - name: topicId
+          in: path
+          description: topic ID
+          type: string
+          required: true
+      responses:
+        "200":
+          description: Success
+          schema:
+          # a pointer to a definition
+            $ref: "#/definitions/TopicResponse"
+      # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
+    post:
+      tags:
+        - Topic
+      description: Adds new comment for a given topic
+      operationId: addComment
+      parameters:
+        - name: topicId
+          in: path
+          description: topic ID
+          type: string
+          required: true
+        - name: body
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/AddCommentParams'
+      responses:
+        "200":
+          description: Success
+          schema:
+          # a pointer to a definition
+            $ref: "#/definitions/HelloWorldResponse"
+      # responses may fall through to errors
+        default:
+          description: Error
+          schema:
+            $ref: "#/definitions/ErrorResponse"
   /swagger:
     x-swagger-pipe: swagger_raw
 # complex objects have schema definitions
@@ -52,6 +144,38 @@ definitions:
     properties:
       message:
         type: string
+  TopicResponse:
+    required:
+      - topics
+    properties:
+      topics:
+        type: array
+        items:
+          type: string
+  AddCommentParams:
+    description: Add comment body object
+    properties:
+      authorName:
+        type: string
+        description: user name who wrote the comment
+      comment:
+        type: string
+        description: comment body
+    required:
+      - authorName
+      - comment
+  AddTopicParams:
+    description: Add topic body object
+    properties:
+      authorName:
+        type: string
+        description: user name who wrote the comment
+      topic:
+        type: string
+        description: topic question body
+    required:
+      - authorName
+      - topic
   ErrorResponse:
     required:
       - message
