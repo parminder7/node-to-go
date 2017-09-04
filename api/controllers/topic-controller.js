@@ -39,8 +39,8 @@ module.exports.getTopicById = function getTopicById(req, res) {
 
 module.exports.addComment = function addComment(req, res) {
   var options = {
-    body: req.swagger.params.body.value.authorName,
-    user: req.swagger.params.body.value.comment,
+    body: req.swagger.params.body.value.comment,
+    user: req.swagger.params.body.value.authorName,
     _id: req.swagger.params.topicId.value
   };
   topiclib.addComment(options, function(err, result){
